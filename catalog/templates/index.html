@@ -1,0 +1,219 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Local Blind Water Marking Home Page</h1>
+
+  <p>Welcome to <em>Blind Water Marking</em>, a very basic Django website developed as a tutorial example on the Mozilla Developer Network.</p>
+
+<h2>Dynamic content</h2>
+
+  <p>The page has the following record counts:</p>
+  <ul>
+      {% csrf_token %}
+      <li>
+          <input type="file" name="image" id="o_uploadFile" accept="image/*" style="display:none;">
+          <input type="hidden" name="o_img_name">
+          <button type="button" class="beautiful" id="o_uploadBtn">上传原始图片</button>
+          <div><img src="" class="img-show" id="o_image"></div>
+      </li>
+
+      <li>
+          <input type="file" name="image" id="wm_uploadFile" accept="image/*" style="display:none;">
+          <input type="hidden" name="wm_img_name">
+          <button type="button" class="beautiful" id="wm_uploadBtn">上传水印图片</button>
+          <div><img src="" class="img-show" id="wm_image"></div>
+      </li>
+
+      <li>
+          <input type="hidden" name="bwm_img_name">
+          <button type="button" class="beautiful" id="bwm_getBtn">获取盲水印图片</button>
+          <div><img src="" class="img-show" id="bwm_image"></div>
+      </li>
+
+      <li>
+          <input type="file" name="image" id="bwm_uploadFile" accept="image/*" style="display:none;">
+          <input type="hidden" name="bwm_up_img_name">
+          <button type="button" class="beautiful" id="bwm_uploadBtn">上传盲水印图片</button>
+          <div><img src="" class="img-show" id="bwm_up_image"></div>
+      </li>
+
+      <li>
+          <input type="hidden" name="bwm_ex_img_name">
+          <button type="button" class="beautiful" id="bwm_extractBtn">提取盲水印</button>
+          <div><img src="" class="img-show" id="bwm_ex_image"></div>
+      </li>
+
+  </ul>
+<script>
+
+    // using jQuery
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // 这些HTTP方法不要求CSRF包含
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+
+    $('#o_uploadBtn').click(function() {
+    $('#o_uploadFile').click()
+    $('#o_uploadFile').change(function() {
+        var formData = new FormData()
+        formData.append('image', this.files[0])
+        formData.append('image_type', "original_image")
+        if(formData) {
+            $.ajax({
+                url: '/catalog/upload_image/',
+                type: 'POST',
+                data: formData,
+                async: true,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    if(res.status == 0) {
+                        alert(res.msg)
+                        return false
+                    }
+                    $('input[name="o_img_name"]').val(res.image_name)
+                    $('#o_image').attr('src', res.src)
+                }
+            })
+        }
+    })
+})
+
+    $('#wm_uploadBtn').click(function() {
+    $('#wm_uploadFile').click()
+    $('#wm_uploadFile').change(function() {
+        var formData = new FormData()
+        formData.append('image', this.files[0])
+        formData.append('image_type', "wm_image")
+        if(formData) {
+            $.ajax({
+                url: '/catalog/upload_image/',
+                type: 'POST',
+                data: formData,
+                async: true,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    if(res.status == 0) {
+                        alert(res.msg)
+                        return false
+                    }
+                    $('input[name="wm_img_name"]').val(res.image_name)
+                    $('#wm_image').attr('src', res.src)
+                }
+            })
+        }
+    })
+})
+
+    $('#bwm_getBtn').click(function() {
+        let formData = new FormData();
+        const o_image_name = $('input[name="o_img_name"]').val();
+        const wm_image_name = $('input[name="wm_img_name"]').val();
+        formData.append('o_image_name', o_image_name)
+        formData.append('wm_image_name', wm_image_name)
+        if(formData) {
+            $.ajax({
+                url: '/catalog/encode_image/',
+                type: 'POST',
+                data: formData,
+                async: true,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    if(res.status == 0) {
+                        alert(res.msg)
+                        return false
+                    }
+                    $('input[name="bwm_img_name"]').val(res.image_name)
+                    $('#bwm_image').attr('src', res.src)
+                }
+            })
+        }
+})
+
+
+    $('#bwm_uploadBtn').click(function() {
+    $('#bwm_uploadFile').click()
+    $('#bwm_uploadFile').change(function() {
+        var formData = new FormData()
+        formData.append('image', this.files[0])
+        formData.append('image_type', "bwm_image")
+        if(formData) {
+            $.ajax({
+                url: '/catalog/upload_image/',
+                type: 'POST',
+                data: formData,
+                async: true,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    if(res.status == 0) {
+                        alert(res.msg)
+                        return false
+                    }
+                    $('input[name="bwm_up_img_name"]').val(res.image_name)
+                    $('#bwm_up_image').attr('src', res.src)
+                }
+            })
+        }
+    })
+})
+
+     $('#bwm_extractBtn').click(function() {
+        let formData = new FormData();
+        const o_image_name = $('input[name="o_img_name"]').val();
+        const bwm_image_name = $('input[name="bwm_up_img_name"]').val();
+        formData.append('o_image_name', o_image_name)
+        formData.append('bwm_image_name', bwm_image_name)
+        if(formData) {
+            $.ajax({
+                url: '/catalog/decode_image/',
+                type: 'POST',
+                data: formData,
+                async: true,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    if(res.status == 0) {
+                        alert(res.msg)
+                        return false
+                    }
+                    $('input[name="bwm_ex_img_name"]').val(res.image_name)
+                    $('#bwm_ex_image').attr('src', res.src)
+                }
+            })
+        }
+})
+</script>
+{% endblock %}
