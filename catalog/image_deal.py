@@ -2,7 +2,7 @@ from catalog import image_tool as it
 import os
 
 alpha = 3.0
-test_num = 9999
+
 
 def encode(o_image, wm):
 
