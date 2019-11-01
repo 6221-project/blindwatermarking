@@ -115,6 +115,15 @@ def reverse_shuffle(img, seed=8888):
             img2[m[i]][n[j]] = img[i][j]
     return img2
 
+def optimal_shape(img):
+    rows = img.shape[0]
+    cols = img.shape[1]
+    nrows = cv2.getOptimalDFTSize(rows)
+    ncols = cv2.getOptimalDFTSize(cols)
+    nimg = np.zeros((nrows,ncols,img.shape[2]))
+    nimg[:rows,:cols] = img
+    return nimg
+
 
 # resize image
 def resize(img, size):
