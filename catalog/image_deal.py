@@ -11,16 +11,24 @@ def encode(o_image, wm):
     path = get_path()
     o_image = it.load_image(join_path(path, name))
     wm = it.load_image(join_path(path, wm))
+    print(wm.shape)
 
-    wm = it.complement(wm)
+    wm_bgr, wm = it.complement(wm)
+    # Reshape size of watermark and flip it
+    wm_shape = ((int)(o_image.shape[1] / 2), (int)(o_image.shape[0] / 2))
+    r_wm = it.resize(wm, wm_shape)
+    print(r_wm.shape)
+    s_wm = it.fill_image(r_wm, o_image.shape)
+    f_wm = it.flip(s_wm) + s_wm
+    print(f_wm.shape)
+    #s_wm = it.shuffle_image_with_shape(wm, wm_shape)
 
-    s_wm = it.shuffle_image_with_shape(wm, o_image.shape)
+    f_image = it.shift(it.fft(o_image))
 
-    f_image = it.fft(o_image)
+    sum_image = f_image + f_wm * alpha
 
-    sum_image = f_image + s_wm * alpha
 
-    final_img = it.real(it.ifft(sum_image))
+    final_img = it.real(it.ifft(it.ishift(sum_image)))
 
     it.save_image(final_img, join_path(path, "bwm_"+name))
     it.save_image(final_img, join_path(path, name))
@@ -33,12 +41,13 @@ def decode(o_image, bwm_image):
     name = o_image
 
     path = get_path()
-    o_image = it.load_image(join_path(path, name))
+    # o_image = it.load_image(join_path(path, name))
     bwm_image = it.load_image(join_path(path, bwm_image))
 
-    wm = (it.fft(bwm_image) - it.fft(o_image)) / alpha
+    wm = it.real(it.shift(it.fft(bwm_image)))
+    # wm = (it.fft(bwm_image) - it.fft(o_image)) / alpha
 
-    wm = it.reverse_shuffle(it.real(wm))
+    # wm = it.reverse_shuffle(it.real(wm))
 
     it.save_image(wm, join_path(path, "wm_"+name))
 
