@@ -20,9 +20,10 @@ def save_image(img, path):
 
 # complement of original img
 def complement(img):
-    b, g, r = cv2.split(img);
+    # return img, img
+    b, g, r = cv2.split(img)
     ic = [255 - b, 255 - g, 255 - r]
-    ic_merged = cv2.merge(ic[0], ic[1], ic[2])
+    ic_merged = cv2.merge([ic[0], ic[1], ic[2]])
     return ic, ic_merged
 
 
@@ -78,6 +79,11 @@ def shift(img):
     return s
 
 
+def ishift(img):
+    s = np.fft.ifftshift(img)
+    return s
+
+
 # shuffle image
 def shuffle_image(img, seed=8888):
     img2 = np.zeros(img.shape)
@@ -115,6 +121,7 @@ def reverse_shuffle(img, seed=8888):
             img2[m[i]][n[j]] = img[i][j]
     return img2
 
+
 def optimal_shape(img):
     rows = img.shape[0]
     cols = img.shape[1]
@@ -129,3 +136,17 @@ def optimal_shape(img):
 def resize(img, size):
     s_img = cv2.resize(img, size, interpolation=cv2.INTER_CUBIC)
     return s_img
+
+
+# flip image by x and y
+def flip(img):
+    f_img = cv2.flip(img, -1)
+    return f_img
+
+
+def fill_image(img, img_shape):
+    img2 = np.zeros(img_shape)
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            img2[i][j] = img[i][j]
+    return img2
