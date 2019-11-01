@@ -20,8 +20,10 @@ def save_image(img, path):
 
 # complement of original img
 def complement(img):
-    ic = 255 - img
-    return ic
+    b, g, r = cv2.split(img);
+    ic = [255 - b, 255 - g, 255 - r]
+    ic_merged = cv2.merge(ic[0], ic[1], ic[2])
+    return ic, ic_merged
 
 
 # 3D to 1D
@@ -112,3 +114,9 @@ def reverse_shuffle(img, seed=8888):
             # img2[m[i]][n[j]] = np.uint8(img[i][j])
             img2[m[i]][n[j]] = img[i][j]
     return img2
+
+
+# resize image
+def resize(img, size):
+    s_img = cv2.resize(img, size, interpolation=cv2.INTER_CUBIC)
+    return s_img
