@@ -6,6 +6,9 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 
+#align image config
+MAX_FEATURES = 500
+GOOD_MATCH_PERCENT = 0.15
 
 # load image
 def load_image(path):
@@ -20,8 +23,10 @@ def save_image(img, path):
 
 # complement of original img
 def complement(img):
-    ic = 255 - img
-    return ic
+    b, g, r = cv2.split(img);
+    ic = [255 - b, 255 - g, 255 - r]
+    ic_merged = cv2.merge(ic[0], ic[1], ic[2])
+    return ic, ic_merged
 
 
 # 3D to 1D
@@ -112,3 +117,62 @@ def reverse_shuffle(img, seed=8888):
             # img2[m[i]][n[j]] = np.uint8(img[i][j])
             img2[m[i]][n[j]] = img[i][j]
     return img2
+
+#optimal shape
+def optimal_shape(img):
+    rows = img.shape[0]
+    cols = img.shape[1]
+    nrows = cv2.getOptimalDFTSize(rows)
+    ncols = cv2.getOptimalDFTSize(cols)
+    nimg = np.zeros((nrows,ncols,img.shape[2]))
+    nimg[:rows,:cols] = img
+    return nimg
+
+
+# resize image
+def resize(img, size):
+    s_img = cv2.resize(img, size, interpolation=cv2.INTER_CUBIC)
+    return s_img
+
+#align image
+def alignImages(im1, im2):
+    # Convert images to grayscale
+    im1Gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
+    im2Gray = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
+     
+    # Detect ORB features and compute descriptors.
+    orb = cv2.ORB_create(MAX_FEATURES)
+    keypoints1, descriptors1 = orb.detectAndCompute(im1Gray, None)
+    keypoints2, descriptors2 = orb.detectAndCompute(im2Gray, None)
+     
+    # Match features.
+    matcher = cv2.DescriptorMatcher_create(cv2.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
+    matches = matcher.match(descriptors1, descriptors2, None)
+     
+    # Sort matches by score
+    matches.sort(key=lambda x: x.distance, reverse=False)
+ 
+    # Remove not so good matches
+    numGoodMatches = int(len(matches) * GOOD_MATCH_PERCENT)
+    matches = matches[:numGoodMatches]
+ 
+    # Draw top matches
+    imMatches = cv2.drawMatches(im1, keypoints1, im2, keypoints2, matches, None)
+    cv2.imwrite("matches.jpg", imMatches)
+     
+    # Extract location of good matches
+    points1 = np.zeros((len(matches), 2), dtype=np.float32)
+    points2 = np.zeros((len(matches), 2), dtype=np.float32)
+ 
+    for i, match in enumerate(matches):
+        points1[i, :] = keypoints1[match.queryIdx].pt
+        points2[i, :] = keypoints2[match.trainIdx].pt
+     
+    # Find homography
+    h, mask = cv2.findHomography(points1, points2, cv2.RANSAC)
+ 
+    # Use homography
+    height, width, channels = im2.shape
+    im1Reg = cv2.warpPerspective(im1, h, (width, height))
+     
+    return im1Reg, h
