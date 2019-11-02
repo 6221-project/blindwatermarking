@@ -43,6 +43,10 @@ def decode(o_image, bwm_image):
     path = get_path()
     # o_image = it.load_image(join_path(path, name))
     bwm_image = it.load_image(join_path(path, bwm_image))
+    o_image = it.load_image(join_path(path, o_image))
+
+    # align
+    bwm_image, h = it.alignImages(bwm_image, o_image)
 
     wm = it.real(it.shift(it.fft(bwm_image)))
     # wm = (it.fft(bwm_image) - it.fft(o_image)) / alpha
