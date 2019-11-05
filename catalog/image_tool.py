@@ -4,6 +4,7 @@
 import cv2
 import numpy as np
 import random
+from catalog import path_tool as pt
 import matplotlib.pyplot as plt
 
 #align image config
@@ -19,6 +20,13 @@ def load_image(path):
 # save image
 def save_image(img, path):
     cv2.imwrite(path, img, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+
+
+# save image as png
+def save_image_with_new_suffix(img, path, suffix="png"):
+    new_path, new_name = pt.change_suffix(path, suffix)
+    cv2.imwrite(new_path, img)
+    return new_name
 
 
 # complement of original img

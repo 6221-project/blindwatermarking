@@ -30,10 +30,9 @@ def encode(o_image, wm):
 
     final_img = it.real(it.ifft(it.ishift(sum_image)))
 
-    it.save_image(final_img, join_path(path, "bwm_"+name))
-    it.save_image(final_img, join_path(path, name))
+    new_name = it.save_image_with_new_suffix(final_img, join_path(path, "bwm_"+name), "png")
 
-    return "bwm_"+name, "media/bwm_"+name
+    return new_name, "media/" + new_name
 
 
 def decode(o_image, bwm_image):
@@ -53,9 +52,9 @@ def decode(o_image, bwm_image):
 
     # wm = it.reverse_shuffle(it.real(wm))
 
-    it.save_image(wm, join_path(path, "wm_"+name))
+    new_name = it.save_image_with_new_suffix(wm, join_path(path, "wm_" + name), "png")
 
-    return "wm_"+name, "media/wm_"+name
+    return new_name, "media/"+new_name
 
 
 def get_path():
