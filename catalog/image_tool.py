@@ -16,6 +16,11 @@ def load_image(path):
     return img
 
 
+def load_image_grey(path):
+    img = cv2.imread(path, 0)
+    return img
+
+
 # save image
 def save_image(img, path):
     cv2.imwrite(path, img, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
@@ -66,13 +71,15 @@ def show_image(img):
 
 # Fourier transform
 def fft(img):
-    f = np.fft.fft2(img)
+    # f = np.fft.fft2(img)
+    f = cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT)
     return f
 
 
 # inverse Fourier transform
 def ifft(img):
-    iff = np.fft.ifft2(img)
+    # iff = np.fft.ifft2(img)
+    iff = cv2.idft(img)
     return iff
 
 
@@ -197,3 +204,14 @@ def alignImages(im1, im2):
     im1Reg = cv2.warpPerspective(im1, h, (width, height))
 
     return im1Reg, h
+
+
+# split tube of image
+def split(img):
+    b, g, r = cv2.split(img)
+    return [b, g, r]
+
+# merge tube of image
+def merge(b, g, r):
+    img = cv2.merge([b, g, r])
+    return img

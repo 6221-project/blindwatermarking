@@ -10,10 +10,10 @@ def encode(o_image, wm):
 
     path = get_path()
     o_image = it.load_image(join_path(path, name))
-    wm = it.load_image(join_path(path, wm))
+    wm = it.load_image_grey(join_path(path, wm))
     print(wm.shape)
 
-    wm_bgr, wm = it.complement(wm)
+    # wm_bgr, wm = it.complement(wm)
     # Reshape size of watermark and flip it
     wm_shape = ((int)(o_image.shape[1] / 2), (int)(o_image.shape[0] / 2))
     r_wm = it.resize(wm, wm_shape)
@@ -23,12 +23,23 @@ def encode(o_image, wm):
     print(f_wm.shape)
     #s_wm = it.shuffle_image_with_shape(wm, wm_shape)
 
-    f_image = it.shift(it.fft(o_image))
+    s_image = it.split(o_image)     #s_image[0] = b; s_image[1] = g; s_image[2] = r
+    f_image = []
+    sum_image = []
+    final_img = []
+    for tube in s_image:
+        f_image.append(it.shift(it.fft(tube)[:, :, 1]))
 
-    sum_image = f_image + f_wm * alpha
+    for tube in f_image:
+        print(tube.shape)
+        sum_image.append(tube + f_wm[:, :, 0] * alpha)
 
+    test = it.merge(sum_image[0], sum_image[1], sum_image[2])
+    it.show_image(test)
 
-    final_img = it.real(it.ifft(it.ishift(sum_image)))
+    for tube in sum_image:
+        final_img.append(it.real(it.ifft(it.ishift(tube))))
+    final_img = it.merge(final_img[0], final_img[1], final_img[2])
 
     it.save_image(final_img, join_path(path, "bwm_"+name))
     it.save_image(final_img, join_path(path, name))
