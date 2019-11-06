@@ -40,10 +40,12 @@ def decode_image(request):
 
     o_image_name = request.POST.get('o_image_name', None)
     bwm_image_name = request.POST.get('bwm_image_name', None)
-    print(111111)
-    print(bwm_image_name)
-    print(111111)
-    image_name, path = image_deal.decode(o_image_name, bwm_image_name)
+    is_align = request.POST.get('is_align', None)
+    if is_align == 'true':
+        is_align = True
+    else:
+        is_align = False
+    image_name, path = image_deal.decode(o_image_name, bwm_image_name, is_align)
     data = {
         "image_name": image_name,
         'src': path

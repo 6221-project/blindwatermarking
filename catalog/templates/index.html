@@ -40,6 +40,7 @@
       <li>
           <input type="hidden" name="bwm_ex_img_name">
           <button type="button" class="beautiful" id="bwm_extractBtn">提取盲水印</button>
+          <p><input type="checkbox" name="is_align"/>是否对齐原图</p>
           <div><img src="" class="img-show" id="bwm_ex_image"></div>
       </li>
 
@@ -193,8 +194,10 @@ $.ajaxSetup({
         let formData = new FormData();
         const o_image_name = $('input[name="o_img_name"]').val();
         const bwm_image_name = $('input[name="bwm_up_img_name"]').val();
+        const is_align = $('input[name="is_align"]').prop('checked');
         formData.append('o_image_name', o_image_name)
         formData.append('bwm_image_name', bwm_image_name)
+        formData.append('is_align', is_align)
         if(formData) {
             $.ajax({
                 url: '/catalog/decode_image/',

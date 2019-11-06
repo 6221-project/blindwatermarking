@@ -77,7 +77,7 @@ def encode(o_image, wm):
     return new_name, "media/" + new_name
 
 
-def decode(o_image, bwm_image):
+def decode(o_image, bwm_image, is_align=False):
 
     name = o_image
 
@@ -87,7 +87,8 @@ def decode(o_image, bwm_image):
     o_image = it.load_image(join_path(path, o_image))
 
     # align
-    # bwm_image, h = it.alignImages(bwm_image, o_image)
+    if is_align:
+        bwm_image, h = it.alignImages(bwm_image, o_image)
     # print(bwm_image.shape)
 
     bwm_bgr = it.split(bwm_image)
