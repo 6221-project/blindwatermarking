@@ -23,16 +23,16 @@ def load_image_grey(path):
 
 # save image
 def save_image(img, path):
-    cv2.imwrite(path, img, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+    cv2.imwrite(path, img, [int(cv2.IMWRITE_PNG_STRATEGY_DEFAULT), 100])
 
 
 # complement of original img
 def complement(img):
     # return img, img
-    b, g, r = cv2.split(img)
-    ic = [255 - b, 255 - g, 255 - r]
-    ic_merged = cv2.merge([ic[0], ic[1], ic[2]])
-    return ic, ic_merged
+    # b, g, r = cv2.split(img)
+    # ic = [255 - b, 255 - g, 255 - r]
+    # ic_merged = cv2.merge([ic[0], ic[1], ic[2]])
+    return 255 - img
 
 
 # 3D to 1D
@@ -58,6 +58,11 @@ def real(img):
     return np.real(img)
 
 
+# get abs
+def abs(img):
+    return np.abs(img)
+
+
 # show image
 def show_image(img):
     # plt.subplot(111), plt.imshow(bgr_to_rgb(img)), \
@@ -79,8 +84,12 @@ def fft(img):
 # inverse Fourier transform
 def ifft(img):
     # iff = np.fft.ifft2(img)
-    iff = cv2.idft(img)
+    iff = cv2.idft(img, flags=cv2.DFT_SCALE | cv2.DFT_REAL_OUTPUT)
     return iff
+
+
+def log(img):
+    return np.log(img)
 
 
 # shift image
@@ -186,7 +195,7 @@ def alignImages(im1, im2):
 
     # Draw top matches
     imMatches = cv2.drawMatches(im1, keypoints1, im2, keypoints2, matches, None)
-    cv2.imwrite("matches.jpg", imMatches)
+    cv2.imwrite("matches.png", imMatches)
 
     # Extract location of good matches
     points1 = np.zeros((len(matches), 2), dtype=np.float32)
@@ -215,3 +224,17 @@ def split(img):
 def merge(b, g, r):
     img = cv2.merge([b, g, r])
     return img
+
+# bgr to gray
+def bgr_to_gray(img):
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    return img
+
+# gray to bgr
+def gray_to_bgr(img):
+    img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    return img
+
+
+def magnitude(i, j):
+    return cv2.magnitude(i, j)
