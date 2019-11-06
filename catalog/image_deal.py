@@ -11,13 +11,14 @@ def encode(o_image, wm):
     path = get_path()
     # wm_bgr, wm = it.complement(wm)
     o_image = it.optimal_shape(it.load_image(join_path(path, name)))
-    wm = it.optimal_shape(it.load_image(join_path(path, wm)))
-    wm_bgr, wm = it.complement(wm)
+    wm = it.optimal_shape_gray(it.load_image_grey(join_path(path, wm)))
+    wm = it.complement(wm)
 
     # Reshape size of watermark and flip it
     wm_shape = ((int)(o_image.shape[1] / 2), (int)(o_image.shape[0] / 2))
-    r_wm = it.complement(it.resize(wm, wm_shape))
+    r_wm = it.resize(wm, wm_shape)
     print(r_wm.shape)
+    print(o_image.shape)
     s_wm = it.fill_image(r_wm, [o_image.shape[0], o_image.shape[1]])
     f_wm = it.flip(s_wm) + s_wm
     print(f_wm.shape)
