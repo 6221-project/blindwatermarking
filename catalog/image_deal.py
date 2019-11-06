@@ -1,7 +1,7 @@
 from catalog import image_tool as it
 import os
 
-alpha = 30.0
+alpha = 20.0
 
 
 def encode(o_image, wm):
@@ -49,9 +49,10 @@ def encode(o_image, wm):
 
     for tube in f_image:
         print(tube.shape)
-        tube[:, :, 0] = tube[:, : ,0] + f_wm * alpha
+        tube[:, :, 0] = tube[:, :, 0] + f_wm * alpha
         tube[:, :, 1] = tube[:, :, 1] + f_wm * alpha
         sum_image.append(tube)
+
     # it.show_image(it.merge(sum_image[0], sum_image[1], sum_image[2]))
         # sum_image.append(tube)
 
@@ -66,12 +67,11 @@ def encode(o_image, wm):
 
     # final_img = final_img[2]
 
-    final_img = it.real(it.ifft(it.ishift(sum_image)))
-
     # it.save_image(test, join_path(path, "bwm_" + name.split('.')[0] + '.png'))
     # it.save_image(test, join_path(path, name.split('.')[0] + '.png'))
 
     # final_img = it.real(it.ifft(it.ishift(f_image)))
+
     new_name = it.save_image_with_new_suffix(final_img, join_path(path, "bwm_"+name), "png")
 
     return new_name, "media/" + new_name
@@ -83,16 +83,18 @@ def decode(o_image, bwm_image):
 
     path = get_path()
     # o_image = it.load_image(join_path(path, name))
-    bwm_image = it.load_image(join_path(path, 'bwm_originalTestImage.png'))
+    bwm_image = it.load_image(join_path(path, bwm_image))
     o_image = it.load_image(join_path(path, o_image))
 
     # align
     # bwm_image, h = it.alignImages(bwm_image, o_image)
     # print(bwm_image.shape)
+
     bwm_bgr = it.split(bwm_image)
     wm = []
     for tube in bwm_bgr:
-        t = it.shift(it.fft(tube)[:, :, 0])
+        t = 20*it.log(it.real(it.shift(it.fft(tube)[:, :, 0])))
+        # t = it.shift(it.fft(tube)[:, :, 0])
         wm.append(t)
     wm = it.merge(wm[0], wm[1], wm[2])
     print(wm.shape)
