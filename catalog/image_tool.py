@@ -7,9 +7,11 @@ import random
 from catalog import path_tool as pt
 import matplotlib.pyplot as plt
 
-#align image config
+
+# align image config
 MAX_FEATURES = 500
 GOOD_MATCH_PERCENT = 0.15
+
 
 # load image
 def load_image(path):
@@ -148,14 +150,15 @@ def reverse_shuffle(img, seed=8888):
             img2[m[i]][n[j]] = img[i][j]
     return img2
 
-#optimal shape
+
+# optimal shape
 def optimal_shape(img):
     rows = img.shape[0]
     cols = img.shape[1]
     nrows = cv2.getOptimalDFTSize(rows)
     ncols = cv2.getOptimalDFTSize(cols)
     nimg = np.zeros([nrows, ncols, img.shape[2]])
-    nimg[:rows,:cols] = img
+    nimg[:rows, :cols] = img
     return nimg
 
 
@@ -181,6 +184,7 @@ def flip(img):
     return f_img
 
 
+# fill zero in blank area
 def fill_image(img, img_shape):
     img2 = np.zeros(img_shape)
     for i in range(img.shape[0]):
@@ -189,7 +193,7 @@ def fill_image(img, img_shape):
     return img2
 
 
-#align image
+# align image
 def alignImages(im1, im2):
     # Convert images to grayscale
     im1Gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
@@ -238,15 +242,18 @@ def split(img):
     b, g, r = cv2.split(img)
     return [b, g, r]
 
+
 # merge tube of image
 def merge(b, g, r):
     img = cv2.merge([b, g, r])
     return img
 
+
 # bgr to gray
 def bgr_to_gray(img):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     return img
+
 
 # gray to bgr
 def gray_to_bgr(img):

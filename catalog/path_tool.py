@@ -4,6 +4,19 @@ import re
 split = os.sep
 
 
+# get cwd
+def get_cwd():
+    return os.getcwd()
+
+
+# join path
+def join_path(*args):
+    path = ''
+    for v in args:
+        path = os.path.join(path, v)
+    return path
+
+
 # get file name by path containing suffix
 def get_file_whole_name(path):
     return re.findall(r'[^\\/:*?"<>|\r\n]+$', path)[0]
@@ -11,6 +24,7 @@ def get_file_whole_name(path):
 
 # get file name by path without suffix
 def get_file_name(path):
+    print(path)
     whole_name = get_file_whole_name(path)
     return re.findall(r'(.+?)\.', whole_name)[0]
 
