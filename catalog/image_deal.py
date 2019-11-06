@@ -9,11 +9,11 @@ def encode(o_image, wm):
     name = o_image
 
     path = get_path()
-    o_image = it.load_image(join_path(path, name))
-    wm = it.load_image_grey(join_path(path, wm))
-    print(wm.shape)
-
     # wm_bgr, wm = it.complement(wm)
+    o_image = it.optimal_shape(it.load_image(join_path(path, name)))
+    wm = it.optimal_shape(it.load_image(join_path(path, wm)))
+    wm_bgr, wm = it.complement(wm)
+
     # Reshape size of watermark and flip it
     wm_shape = ((int)(o_image.shape[1] / 2), (int)(o_image.shape[0] / 2))
     r_wm = it.complement(it.resize(wm, wm_shape))
@@ -65,15 +65,15 @@ def encode(o_image, wm):
 
     # final_img = final_img[2]
 
+    final_img = it.real(it.ifft(it.ishift(sum_image)))
 
     # it.save_image(test, join_path(path, "bwm_" + name.split('.')[0] + '.png'))
     # it.save_image(test, join_path(path, name.split('.')[0] + '.png'))
 
     # final_img = it.real(it.ifft(it.ishift(f_image)))
-    it.save_image(final_img, join_path(path, "bwm_"+name.split('.')[0] + '.png'))
-    it.save_image(final_img, join_path(path, name.split('.')[0] + '.png'))
+    new_name = it.save_image_with_new_suffix(final_img, join_path(path, "bwm_"+name), "png")
 
-    return "bwm_"+name, "media/bwm_"+name
+    return new_name, "media/" + new_name
 
 
 def decode(o_image, bwm_image):
@@ -100,9 +100,9 @@ def decode(o_image, bwm_image):
 
     # wm = it.reverse_shuffle(it.real(wm))
 
-    it.save_image(wm, join_path(path, "wm_"+name.split('.')[0] + '.png'))
+    new_name = it.save_image_with_new_suffix(wm, join_path(path, "wm_" + name), "png")
 
-    return "wm_"+name, "media/wm_"+name
+    return new_name, "media/"+new_name
 
 
 def get_path():
