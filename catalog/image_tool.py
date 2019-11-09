@@ -4,11 +4,14 @@
 import cv2
 import numpy as np
 import random
+from catalog import path_tool as pt
 import matplotlib.pyplot as plt
 
-#align image config
+
+# align image config
 MAX_FEATURES = 500
 GOOD_MATCH_PERCENT = 0.15
+
 
 # load image
 def load_image(path):
@@ -16,18 +19,30 @@ def load_image(path):
     return img
 
 
+def load_image_grey(path):
+    img = cv2.imread(path, 0)
+    return img
+
+
 # save image
 def save_image(img, path):
-    cv2.imwrite(path, img, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+    cv2.imwrite(path, img, [int(cv2.IMWRITE_PNG_STRATEGY_DEFAULT), 100])
+
+
+# save image as png
+def save_image_with_new_suffix(img, path, suffix="png"):
+    new_path, new_name = pt.change_suffix(path, suffix)
+    cv2.imwrite(new_path, img)
+    return new_name
 
 
 # complement of original img
 def complement(img):
     # return img, img
-    b, g, r = cv2.split(img)
-    ic = [255 - b, 255 - g, 255 - r]
-    ic_merged = cv2.merge([ic[0], ic[1], ic[2]])
-    return ic, ic_merged
+    # b, g, r = cv2.split(img)
+    # ic = [255 - b, 255 - g, 255 - r]
+    # ic_merged = cv2.merge([ic[0], ic[1], ic[2]])
+    return 255 - img
 
 
 # 3D to 1D
@@ -53,6 +68,11 @@ def real(img):
     return np.real(img)
 
 
+# get abs
+def abs(img):
+    return np.abs(img)
+
+
 # show image
 def show_image(img):
     # plt.subplot(111), plt.imshow(bgr_to_rgb(img)), \
@@ -66,14 +86,20 @@ def show_image(img):
 
 # Fourier transform
 def fft(img):
-    f = np.fft.fft2(img)
+    # f = np.fft.fft2(img)
+    f = cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT)
     return f
 
 
 # inverse Fourier transform
 def ifft(img):
-    iff = np.fft.ifft2(img)
+    # iff = np.fft.ifft2(img)
+    iff = cv2.idft(img, flags=cv2.DFT_SCALE | cv2.DFT_REAL_OUTPUT)
     return iff
+
+
+def log(img):
+    return np.log(img)
 
 
 # shift image
@@ -124,14 +150,25 @@ def reverse_shuffle(img, seed=8888):
             img2[m[i]][n[j]] = img[i][j]
     return img2
 
-#optimal shape
+
+# optimal shape
 def optimal_shape(img):
     rows = img.shape[0]
     cols = img.shape[1]
     nrows = cv2.getOptimalDFTSize(rows)
     ncols = cv2.getOptimalDFTSize(cols)
-    nimg = np.zeros((nrows,ncols,img.shape[2]))
-    nimg[:rows,:cols] = img
+    nimg = np.zeros([nrows, ncols, img.shape[2]])
+    nimg[:rows, :cols] = img
+    return nimg
+
+
+def optimal_shape_gray(img):
+    rows = img.shape[0]
+    cols = img.shape[1]
+    nrows = cv2.getOptimalDFTSize(rows)
+    ncols = cv2.getOptimalDFTSize(cols)
+    nimg = np.zeros([nrows, ncols])
+    nimg[:rows, :cols] = img
     return nimg
 
 
@@ -147,6 +184,7 @@ def flip(img):
     return f_img
 
 
+# fill zero in blank area
 def fill_image(img, img_shape):
     img2 = np.zeros(img_shape)
     for i in range(img.shape[0]):
@@ -155,7 +193,7 @@ def fill_image(img, img_shape):
     return img2
 
 
-#align image
+# align image
 def alignImages(im1, im2):
     # Convert images to grayscale
     im1Gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
@@ -179,7 +217,7 @@ def alignImages(im1, im2):
 
     # Draw top matches
     imMatches = cv2.drawMatches(im1, keypoints1, im2, keypoints2, matches, None)
-    cv2.imwrite("matches.jpg", imMatches)
+    cv2.imwrite("matches.png", imMatches)
 
     # Extract location of good matches
     points1 = np.zeros((len(matches), 2), dtype=np.float32)
@@ -197,3 +235,32 @@ def alignImages(im1, im2):
     im1Reg = cv2.warpPerspective(im1, h, (width, height))
 
     return im1Reg, h
+
+
+# split tube of image
+def split(img):
+    b, g, r = cv2.split(img)
+    return [b, g, r]
+
+
+# merge tube of image
+def merge(b, g, r):
+    img = cv2.merge([b, g, r])
+    return img
+
+
+# bgr to gray
+def bgr_to_gray(img):
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    return img
+
+
+# gray to bgr
+def gray_to_bgr(img):
+    img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    return img
+
+
+def magnitude(i, j):
+    return cv2.magnitude(i, j)
+

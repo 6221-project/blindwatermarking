@@ -13,33 +13,34 @@
       <li>
           <input type="file" name="image" id="o_uploadFile" accept="image/*" style="display:none;">
           <input type="hidden" name="o_img_name">
-          <button type="button" class="beautiful" id="o_uploadBtn">上传原始图片</button>
+          <button type="button" class="beautiful" id="o_uploadBtn">upload original image</button>
           <div><img src="" class="img-show" id="o_image"></div>
       </li>
 
       <li>
           <input type="file" name="image" id="wm_uploadFile" accept="image/*" style="display:none;">
           <input type="hidden" name="wm_img_name">
-          <button type="button" class="beautiful" id="wm_uploadBtn">上传水印图片</button>
+          <button type="button" class="beautiful" id="wm_uploadBtn">upload water marking</button>
           <div><img src="" class="img-show" id="wm_image"></div>
       </li>
 
       <li>
           <input type="hidden" name="bwm_img_name">
-          <button type="button" class="beautiful" id="bwm_getBtn">获取盲水印图片</button>
+          <button type="button" class="beautiful" id="bwm_getBtn">get image with blind water marking</button>
           <div><img src="" class="img-show" id="bwm_image"></div>
       </li>
 
       <li>
           <input type="file" name="image" id="bwm_uploadFile" accept="image/*" style="display:none;">
           <input type="hidden" name="bwm_up_img_name">
-          <button type="button" class="beautiful" id="bwm_uploadBtn">上传盲水印图片</button>
+          <button type="button" class="beautiful" id="bwm_uploadBtn">upload image with blind water marking</button>
           <div><img src="" class="img-show" id="bwm_up_image"></div>
       </li>
 
       <li>
           <input type="hidden" name="bwm_ex_img_name">
-          <button type="button" class="beautiful" id="bwm_extractBtn">提取盲水印</button>
+          <button type="button" class="beautiful" id="bwm_extractBtn">extract blind water marking</button>
+          <p><input type="checkbox" name="is_align"/>whether align with original image</p>
           <div><img src="" class="img-show" id="bwm_ex_image"></div>
       </li>
 
@@ -193,8 +194,10 @@ $.ajaxSetup({
         let formData = new FormData();
         const o_image_name = $('input[name="o_img_name"]').val();
         const bwm_image_name = $('input[name="bwm_up_img_name"]').val();
+        const is_align = $('input[name="is_align"]').prop('checked');
         formData.append('o_image_name', o_image_name)
         formData.append('bwm_image_name', bwm_image_name)
+        formData.append('is_align', is_align)
         if(formData) {
             $.ajax({
                 url: '/catalog/decode_image/',
