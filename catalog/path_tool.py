@@ -24,7 +24,6 @@ def get_file_whole_name(path):
 
 # get file name by path without suffix
 def get_file_name(path):
-    print(path)
     whole_name = get_file_whole_name(path)
     return re.findall(r'(.+?)\.', whole_name)[0]
 

@@ -1,7 +1,7 @@
 from catalog import image_tool as it
 from catalog import path_tool as pt
 
-alpha = 20.0
+alpha = 100.0
 basic_path = pt.join_path(pt.get_cwd(), 'catalog', 'media')
 
 

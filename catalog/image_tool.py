@@ -263,3 +263,4 @@ def gray_to_bgr(img):
 
 def magnitude(i, j):
     return cv2.magnitude(i, j)
+
