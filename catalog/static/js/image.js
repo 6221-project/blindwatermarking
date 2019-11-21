@@ -94,11 +94,8 @@ function mOut(obj) {
                         alert(res.msg)
                         return false
                     }
-                    console.log("w name is:"+res.image_name)
-                    console.log("w src is:"+res.src)
                     $('input[name="wm_img_name"]').val(res.image_name)
                     $('#wm_image').attr('src', res.src)
-                    console.log("w after set, src is:"+$('#wm_image').attr('src'))
                 }
             })
         }

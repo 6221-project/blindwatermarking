@@ -55,9 +55,20 @@
   <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="bwm_ex_image"></div>
 </li>
 
+<li>
+  <div class="banner-w3lstext">
+    <h2 id=="test_Btn" onmouseover="mOver(this)" onmouseout="mOut(this)" style="display: inline" onclick="extract_wm()">Test Extracted Water Marking</h2>
+    <div style="display: inline">
+      <span style="color: #ffffff"><input type="checkbox" name="is_align"/>whether align with original image</span>
+      <input type="text" class="seed_input" id="test_seed" οninput="value=value.replace(/[^\d]/g,'')" placeholder="Input your seed here.">
+    </div>
+  </div>
+  <input type="hidden" name="bwm_ex_img_name">
+  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="test_ex_image"></div>
+</li>
+
 <script type="text/javascript">
   function extract_wm(){
-     console.log('tell me what wrong?')
         let formData = new FormData();
         const o_image_name = $('input[name="o_img_name"]').val();
         const bwm_image_name = $('input[name="bwm_up_img_name"]').val();
@@ -83,11 +94,8 @@
                         alert(res.msg)
                         return false
                     }
-                    console.log("name is:"+res.image_name)
-                    console.log("src is:"+res.src)
                     $('input[name="bwm_ex_img_name"]').val(res.image_name)
                     $('#bwm_ex_image').attr('src', res.src)
-                    console.log("after set, src is:"+$('#bwm_ex_image').attr('src'))
                 }
             })
         }
