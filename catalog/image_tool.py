@@ -268,4 +268,10 @@ def magnitude(i, j):
     return cv2.magnitude(i, j)
 
 
-
+def save_fft_and_dfft(s_img, path):
+    for i, tube in enumerate(s_img):
+        ft = fft(tube)
+        dft = shift(ft)[:, :, 0]
+        ft = ft[:, :, 0]
+        save_image(ft, pt.join_path(path, "ft_" + str(i) + ".png"))
+        save_image(dft, pt.join_path(path, "dft_" + str(i) + ".png"))
