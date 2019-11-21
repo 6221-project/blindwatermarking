@@ -3,7 +3,7 @@ from catalog import path_tool as pt
 
 alpha = 40.0
 basic_path = pt.join_path(pt.get_cwd(), 'catalog', 'media')
-
+p_media = "/catalog/media/"
 
 def encode(o_image, wm):
 
@@ -51,7 +51,7 @@ def encode(o_image, wm):
 
     new_name = it.save_image_with_new_suffix(final_img, pt.join_path(basic_path, "bwm_"+name), "png")
 
-    return new_name, "media/" + new_name
+    return new_name, p_media + new_name
 
 
 def decode(o_image, bwm_image, is_align=False):
@@ -74,7 +74,7 @@ def decode(o_image, bwm_image, is_align=False):
 
     new_name = it.save_image_with_new_suffix(wm, pt.join_path(basic_path, "dwm_" + name), "png")
 
-    return new_name, "media/"+new_name
+    return new_name, p_media + new_name
 
 
 def encode_with_seed(o_image, wm, seed):
@@ -119,7 +119,7 @@ def encode_with_seed(o_image, wm, seed):
 
     new_name = it.save_image_with_new_suffix(final_img, pt.join_path(basic_path, "bwm_"+name), "png")
 
-    return new_name, "media/" + new_name
+    return new_name, p_media + new_name
 
 
 def decode_with_seed(o_image, bwm_image, seed, is_align=False):
@@ -143,4 +143,4 @@ def decode_with_seed(o_image, bwm_image, seed, is_align=False):
 
     new_name = it.save_image_with_new_suffix(wm, pt.join_path(basic_path, "dwm_" + name), "png")
 
-    return new_name, "media/"+new_name
+    return new_name, p_media + new_name
