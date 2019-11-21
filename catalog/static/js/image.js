@@ -6,12 +6,45 @@ function resizeme(Obj,ObjWidth,ObjHeight,intSize){
 }
 
 function mOver(obj) {
-  obj.style.color="#000"
+  obj.style.color="#ff0000"
+  obj.style.fontWeight="bold"
+  obj.style.cursor="pointer"
 }
 
 function mOut(obj) {
   obj.style.color="#fff"
+  obj.style.fontWeight=""
 }
+
+
+  $(".dragFile").on("dragenter", function(e){
+         e.preventDefault();
+     });
+  $('.dragFile').on('dragover', (e) => {
+    e.preventDefault();
+  })
+  $('.dragFile').on('drop', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    e.dataTransfer = e.originalEvent.dataTransfer;
+    var files = e.dataTransfer.files; //获取文件
+    appendFile(files, '.list-drag')
+  })
+
+   function appendFile (files, listName) {
+     for( file of files ) {
+       let url = window.URL.createObjectURL(file);
+       let liStr = `
+         <li class="list-group-item">
+           <div>
+             <img src="${url}" alt="文件" />
+           </div>
+         </li>
+       `;
+       $(listName).append(liStr);
+     }
+   }
+
 
     $('#o_uploadBtn').click(function() {
     $('#o_uploadFile').click()
@@ -61,8 +94,11 @@ function mOut(obj) {
                         alert(res.msg)
                         return false
                     }
+                    console.log("w name is:"+res.image_name)
+                    console.log("w src is:"+res.src)
                     $('input[name="wm_img_name"]').val(res.image_name)
                     $('#wm_image').attr('src', res.src)
+                    console.log("w after set, src is:"+$('#wm_image').attr('src'))
                 }
             })
         }
@@ -74,7 +110,6 @@ function mOut(obj) {
         const o_image_name = $('input[name="o_img_name"]').val();
         const wm_image_name = $('input[name="wm_img_name"]').val();
         const seed = $('#encode_seed').val();
-        console.log(seed)
         formData.append('o_image_name', o_image_name)
         formData.append('wm_image_name', wm_image_name)
         if(seed !== null && seed !== undefined && seed !== ''){
@@ -130,68 +165,4 @@ function mOut(obj) {
     })
 })
 
-     $('#bwm_extractBtn').click(function() {
-         console.log('tell me what wrong?')
-        let formData = new FormData();
-        const o_image_name = $('input[name="o_img_name"]').val();
-        const bwm_image_name = $('input[name="bwm_up_img_name"]').val();
-        const is_align = $('input[name="is_align"]').prop('checked');
-        const seed = $('#decode_seed').val();
-        formData.append('o_image_name', o_image_name)
-        formData.append('bwm_image_name', bwm_image_name)
-        formData.append('is_align', is_align)
-        if(seed !== null && seed !== undefined && seed !== ''){
-            formData.append('seed', seed)
-        }
-        if(formData) {
-            $.ajax({
-                url: '/catalog/decode_image/',
-                type: 'POST',
-                data: formData,
-                async: true,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(res) {
-                    if(res.status == 0) {
-                        alert(res.msg)
-                        return false
-                    }
-                    $('input[name="bwm_ex_img_name"]').val(res.image_name)
-                    $('#bwm_ex_image').attr('src', res.src)
-                }
-            })
-        }
-})
 
-$('#bwm_extractBtn2').click(function () {
-    console.log('enter into function')
-    // $('#bwm_extractBtn').click()
-        let formData = new FormData();
-        const o_image_name = $('input[name="o_img_name"]').val();
-        const bwm_image_name = $('input[name="bwm_up_img_name"]').val();
-        const is_align = $('input[name="is_align"]').prop('checked');
-        formData.append('o_image_name', o_image_name)
-        formData.append('bwm_image_name', bwm_image_name)
-        formData.append('is_align', is_align)
-        if(formData) {
-            $.ajax({
-                url: '/catalog/decode_image/',
-                type: 'POST',
-                data: formData,
-                async: true,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(res) {
-                    if(res.status == 0) {
-                        alert(res.msg)
-                        return false
-                    }
-                    console.log(res.image_name+'\n'+res.src)
-                    $('input[name="bwm_ex_img_name"]').val(res.image_name)
-                    $('#bwm_ex_image').attr('src', res.src)
-                }
-            })
-        }
-})

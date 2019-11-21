@@ -1,5 +1,37 @@
-.img-show {
+.img-show{
+    display: inline-block;
+    width: 80%; height: 500px;
     border-radius: 10px;
+    color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+.img-show:not([src]) {
+    visibility: hidden;
+}
+.img-show::before {
+    content: "";
+    border-radius: 10px;
+    position: absolute; left: 0;
+    width: 100%; height: 100%;
+    background-color: #fff;
+    visibility: visible;
+}
+.img-show::after {
+    content: "your image will show here";
+    border-radius: 10px;
+    text-align: center;
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%;
+    line-height: 30px;
+    background-color: rgba(0,0,0,.5);
+    color: white;
+    font-size: 14px;
+    visibility: visible;
+}
+.seed_input{
+    margin: 1em 1em 0px;
 }
 .sidebar-nav {
     margin-top: 20px;
