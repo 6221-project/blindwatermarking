@@ -59,7 +59,7 @@
   <div class="banner-w3lstext">
     <h2 id=="test_Btn" onmouseover="mOver(this)" onmouseout="mOut(this)" style="display: inline" onclick="extract_wm()">Test Extracted Water Marking</h2>
     <div style="display: inline">
-      <span style="color: #ffffff"><input type="checkbox" name="is_align"/>whether align with original image</span>
+      <p><input type="checkbox" name="is_align"/>whether align with original image</p> <input type="hidden" id="hidden_is_align" value="false">
       <input type="text" class="seed_input" id="test_seed" οninput="value=value.replace(/[^\d]/g,'')" placeholder="Input your seed here.">
     </div>
   </div>
@@ -72,7 +72,7 @@
         let formData = new FormData();
         const o_image_name = $('input[name="o_img_name"]').val();
         const bwm_image_name = $('input[name="bwm_up_img_name"]').val();
-        const is_align = $('input[name="is_align"]').prop('checked');
+        const is_align = $('#hidden_is_align').val();
         const seed = $('#decode_seed').val();
         formData.append('o_image_name', o_image_name)
         formData.append('bwm_image_name', bwm_image_name)
@@ -100,5 +100,15 @@
             })
         }
   }
+
+  $('input[name="is_align"]').change(function() {
+    let is_checked = $('#hidden_is_align').val();
+    if (is_checked == "false"){
+      is_checked = true;
+    }else{
+      is_checked = false;
+    }
+    $('#hidden_is_align').val(is_checked);
+  });
 </script>
 {% endblock %}
