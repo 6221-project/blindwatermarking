@@ -194,47 +194,50 @@ def fill_image(img, img_shape):
 
 
 # align image
-def alignImages(im1, im2):
-    # Convert images to grayscale
-    im1Gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
-    im2Gray = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
+def alignImages(img1, img2):
+    # change images into grayscale
+    img1_gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    img2_gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 
-    # Detect ORB features and compute descriptors.
-    orb = cv2.ORB_create(MAX_FEATURES)
-    keypoints1, descriptors1 = orb.detectAndCompute(im1Gray, None)
-    keypoints2, descriptors2 = orb.detectAndCompute(im2Gray, None)
+    # extract ORB features and get descriptors.
+    orb = cv2.ORB_create(MAX_FEATURES)  # using max feature
+    feature1, descriptors1 = orb.detectAndCompute(img1_gray, None)
+    feature2, descriptors2 = orb.detectAndCompute(img2_gray, None)
 
-    # Match features.
+    # match features.
     matcher = cv2.DescriptorMatcher_create(cv2.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
     matches = matcher.match(descriptors1, descriptors2, None)
 
-    # Sort matches by score
+    # sort matches by score
     matches.sort(key=lambda x: x.distance, reverse=False)
 
-    # Remove not so good matches
-    numGoodMatches = int(len(matches) * GOOD_MATCH_PERCENT)
-    matches = matches[:numGoodMatches]
+    # remove some bad matches
+    bad_matches = int(len(matches) * GOOD_MATCH_PERCENT)
+    matches = matches[:bad_matches]
 
-    # Draw top matches
-    imMatches = cv2.drawMatches(im1, keypoints1, im2, keypoints2, matches, None)
-    cv2.imwrite("matches.png", imMatches)
+    # connect good matches
+    img_matches = cv2.drawMatches(img1, feature1, img2, feature2, matches, None)
+    basic_path = pt.join_path(pt.get_cwd(), 'catalog', 'media')
+    final_path = pt.join_path(basic_path, "matches.png")
+    save_image(img_matches, final_path)
+    #cv2.imwrite("matches.png", img_matches)
 
-    # Extract location of good matches
+    # extract location of good matches
     points1 = np.zeros((len(matches), 2), dtype=np.float32)
     points2 = np.zeros((len(matches), 2), dtype=np.float32)
 
     for i, match in enumerate(matches):
-        points1[i, :] = keypoints1[match.queryIdx].pt
-        points2[i, :] = keypoints2[match.trainIdx].pt
+        points1[i, :] = feature1[match.queryIdx].pt
+        points2[i, :] = feature2[match.trainIdx].pt
 
-    # Find homography
+    # find homography
     h, mask = cv2.findHomography(points1, points2, cv2.RANSAC)
 
-    # Use homography
-    height, width, channels = im2.shape
-    im1Reg = cv2.warpPerspective(im1, h, (width, height))
+    # use homography
+    height, width, channels = img2.shape
+    img1_reg = cv2.warpPerspective(img1, h, (width, height))
 
-    return im1Reg, h
+    return img1_reg, h
 
 
 # split tube of image
@@ -264,3 +267,11 @@ def gray_to_bgr(img):
 def magnitude(i, j):
     return cv2.magnitude(i, j)
 
+
+def save_fft_and_dfft(s_img, path):
+    for i, tube in enumerate(s_img):
+        ft = fft(tube)
+        dft = shift(ft)[:, :, 0]
+        ft = ft[:, :, 0]
+        save_image(ft, pt.join_path(path, "ft_" + str(i) + ".png"))
+        save_image(dft, pt.join_path(path, "dft_" + str(i) + ".png"))

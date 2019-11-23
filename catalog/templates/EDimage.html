@@ -1,0 +1,114 @@
+{% extends "base_index.html" %}
+
+{% block content %}
+<li>
+  <div class="banner-w3lstext">
+    <h2 id="o_uploadBtn" onmouseover="mOver(this)" onmouseout="mOut(this)">Original Image</h2>
+<!-- drag start -->
+<!--    <div class="col-md-5 col-md-offset-1 up-content  dragFile">-->
+<!--      <div class="up-area" style="width: 100px;height: 100px;background-color: #0fdfe2;">-->
+<!--        <div class="row">-->
+<!--          <ul class="list-group clearfix list-drag">-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!-- drag end -->
+  </div>
+  <input type="file" name="image" id="o_uploadFile" accept="image/*" style="display:none;">
+  <input type="hidden" name="o_img_name">
+  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="o_image"></div>
+</li>
+
+<li>
+  <div class="banner-w3lstext"><h2 id="wm_uploadBtn" onmouseover="mOver(this)" onmouseout="mOut(this)">Water Marking</h2></div>
+  <input type="file" name="image" id="wm_uploadFile" accept="image/*" style="display:none;">
+  <input type="hidden" name="wm_img_name">
+  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="wm_image"></div>
+</li>
+
+<li>
+  <div class="banner-w3lstext">
+    <h2 id="bwm_getBtn" onmouseover="mOver(this)" onmouseout="mOut(this)" style="display: inline">Encoded Image</h2>
+    <input type="text" class="seed_input" id="encode_seed" οninput="value=value.replace(/[^\d]/g,'')" placeholder="Input your seed here." style="display: inline">
+  </div>
+  <input type="hidden" name="bwm_img_name">
+  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="bwm_image"></div>
+</li>
+
+<li>
+  <div class="banner-w3lstext"><h2 id="bwm_uploadBtn" onmouseover="mOver(this)" onmouseout="mOut(this)">The Image Which You Want to Decode</h2></div>
+  <input type="file" name="image" id="bwm_uploadFile" accept="image/*" style="display:none;">
+  <input type="hidden" name="bwm_up_img_name">
+  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="bwm_up_image"></div>
+</li>
+
+<li>
+  <div class="banner-w3lstext">
+    <h2 id=="bwm_extractBtn" onmouseover="mOver(this)" onmouseout="mOut(this)" style="display: inline" onclick="extract_wm()">Extracted Water Marking</h2>
+    <div style="display: inline">
+      <span style="color: #ffffff"><input type="checkbox" name="is_align"/>whether align with original image</span>
+      <input type="text" class="seed_input" id="decode_seed" οninput="value=value.replace(/[^\d]/g,'')" placeholder="Input your seed here.">
+    </div>
+  </div>
+  <input type="hidden" name="bwm_ex_img_name">
+  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="bwm_ex_image"></div>
+</li>
+
+<li>
+  <div class="banner-w3lstext">
+    <h2 id=="test_Btn" onmouseover="mOver(this)" onmouseout="mOut(this)" style="display: inline" onclick="extract_wm()">Test Extracted Water Marking</h2>
+    <div style="display: inline">
+      <p><input type="checkbox" name="is_align"/>whether align with original image</p> <input type="hidden" id="hidden_is_align" value="false">
+      <input type="text" class="seed_input" id="test_seed" οninput="value=value.replace(/[^\d]/g,'')" placeholder="Input your seed here.">
+    </div>
+  </div>
+  <input type="hidden" name="bwm_ex_img_name">
+  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="test_ex_image"></div>
+</li>
+
+<script type="text/javascript">
+  function extract_wm(){
+        let formData = new FormData();
+        const o_image_name = $('input[name="o_img_name"]').val();
+        const bwm_image_name = $('input[name="bwm_up_img_name"]').val();
+        const is_align = $('#hidden_is_align').val();
+        const seed = $('#decode_seed').val();
+        formData.append('o_image_name', o_image_name)
+        formData.append('bwm_image_name', bwm_image_name)
+        formData.append('is_align', is_align)
+        if(seed !== null && seed !== undefined && seed !== ''){
+            formData.append('seed', seed)
+        }
+        if(formData) {
+            $.ajax({
+                url: '/catalog/decode_image/',
+                type: 'POST',
+                data: formData,
+                async: true,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    if(res.status == 0) {
+                        alert(res.msg)
+                        return false
+                    }
+                    $('input[name="bwm_ex_img_name"]').val(res.image_name)
+                    $('#bwm_ex_image').attr('src', res.src)
+                }
+            })
+        }
+  }
+
+  $('input[name="is_align"]').change(function() {
+    let is_checked = $('#hidden_is_align').val();
+    if (is_checked == "false"){
+      is_checked = true;
+    }else{
+      is_checked = false;
+    }
+    $('#hidden_is_align').val(is_checked);
+  });
+</script>
+{% endblock %}

@@ -7,7 +7,9 @@ sys.path.append('../')
 from blindwatermarking import settings
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.ed_image, name='index'),
+    path('EDimage/', views.ed_image),
+    path('index/', views.index),
     path('upload_image/', views.upload_image),
     path('encode_image/', views.encode_image),
     path('decode_image/', views.decode_image),
