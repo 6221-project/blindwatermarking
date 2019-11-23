@@ -10,7 +10,7 @@ def encode(o_image, wm):
     # name of original image
     name = o_image
 
-    o_image, shape_temp = it.optimal_shape(it.load_image(pt.join_path(basic_path, name)))
+    o_image = it.optimal_shape(it.load_image(pt.join_path(basic_path, name)))
     wm = it.load_image_grey(pt.join_path(basic_path, wm))
     wm = it.complement(wm)
 
@@ -47,7 +47,7 @@ def encode(o_image, wm):
     for tube in sum_image:
         idft = it.ifft(it.ishift(tube))
         final_img.append(idft)
-    final_img = it.merge(final_img[0], final_img[1], final_img[2])[0:shape_temp[0], 0:shape_temp[1], :]
+    final_img = it.merge(final_img[0], final_img[1], final_img[2])
 
     new_name = it.save_image_with_new_suffix(final_img, pt.join_path(basic_path, "bwm_"+name), "png")
 
@@ -83,7 +83,8 @@ def encode_with_seed(o_image, wm, seed):
     name = o_image
 
     o_image = it.optimal_shape(it.load_image(pt.join_path(basic_path, name)))
-    wm = it.optimal_shape_gray(it.load_image_grey(pt.join_path(basic_path, wm)))
+    # o_shape = o_image.shape
+    wm = it.load_image_grey(pt.join_path(basic_path, wm))
     wm = it.complement(wm)
 
     # Reshape size of watermark and flip it
@@ -136,8 +137,8 @@ def decode_with_seed(o_image, bwm_image, seed, is_align=False):
     bwm_bgr = it.split(bwm_image)
     wm = []
     for tube in bwm_bgr:
-        t = 20*it.log(it.real(it.shift(it.fft(tube)[:, :, 0])))
-        t = it.shuffle_image(t, seed=seed)
+        t = 20*it.log(it.real(it.shuffle_image((it.shift(it.fft(tube)[:, :, 0])), seed=seed)))
+        # t = it.shuffle_image(t, seed=seed)
         wm.append(t)
     wm = it.merge(wm[0], wm[1], wm[2])
 

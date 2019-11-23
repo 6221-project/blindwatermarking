@@ -157,9 +157,10 @@ def optimal_shape(img):
     cols = img.shape[1]
     nrows = cv2.getOptimalDFTSize(rows)
     ncols = cv2.getOptimalDFTSize(cols)
-    nimg = np.zeros([nrows, ncols, img.shape[2]])
-    nimg[:rows, :cols] = img
-    return nimg, img.shape
+    nimg = resize(img, (ncols, nrows))
+    # nimg = np.zeros([nrows, ncols, img.shape[2]])
+    # nimg[:rows, :cols] = img
+    return nimg
 
 
 def optimal_shape_gray(img):
@@ -167,9 +168,10 @@ def optimal_shape_gray(img):
     cols = img.shape[1]
     nrows = cv2.getOptimalDFTSize(rows)
     ncols = cv2.getOptimalDFTSize(cols)
-    nimg = np.zeros([nrows, ncols])
-    nimg[:rows, :cols] = img
-    return nimg, img.shape
+    nimg = resize(img, (ncols, nrows))
+    # nimg = np.zeros([nrows, ncols])
+    # nimg[:rows, :cols] = img
+    return nimg
 
 
 # resize image
