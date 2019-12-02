@@ -17,14 +17,14 @@
   </div>
   <input type="file" name="image" id="o_uploadFile" accept="image/*" style="display:none;">
   <input type="hidden" name="o_img_name">
-  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="o_image"></div>
+  <div class="img_div"><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="o_image"></div>
 </li>
 
 <li>
   <div class="banner-w3lstext"><h2 id="wm_uploadBtn" onmouseover="mOver(this)" onmouseout="mOut(this)">Water Marking</h2></div>
   <input type="file" name="image" id="wm_uploadFile" accept="image/*" style="display:none;">
   <input type="hidden" name="wm_img_name">
-  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="wm_image"></div>
+  <div class="img_div"><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="wm_image"></div>
 </li>
 
 <li>
@@ -33,14 +33,14 @@
     <input type="text" class="seed_input" id="encode_seed" οninput="value=value.replace(/[^\d]/g,'')" placeholder="Input your seed here." style="display: inline">
   </div>
   <input type="hidden" name="bwm_img_name">
-  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="bwm_image"></div>
+  <div class="img_div"><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="bwm_image"></div>
 </li>
 
 <li>
   <div class="banner-w3lstext"><h2 id="bwm_uploadBtn" onmouseover="mOver(this)" onmouseout="mOut(this)">The Image Which You Want to Decode</h2></div>
   <input type="file" name="image" id="bwm_uploadFile" accept="image/*" style="display:none;">
   <input type="hidden" name="bwm_up_img_name">
-  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="bwm_up_image"></div>
+  <div class="img_div"><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="bwm_up_image"></div>
 </li>
 
 <li>
@@ -52,7 +52,7 @@
     </div>
   </div>
   <input type="hidden" name="bwm_ex_img_name">
-  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="bwm_ex_image"></div>
+  <div class="img_div"><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="bwm_ex_image"></div>
 </li>
 
 <li>
@@ -64,7 +64,7 @@
     </div>
   </div>
   <input type="hidden" name="bwm_ex_img_name">
-  <div><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="test_ex_image"></div>
+  <div class="img_div"><img onload="resizeme(this,this.width,this.height,900);" src="" class="img-show" id="test_ex_image"></div>
 </li>
 
 <script type="text/javascript">
