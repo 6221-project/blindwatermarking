@@ -14,8 +14,6 @@
     left: 50%;
     transform: translate(-50%,-50%);
     vertical-align: middle;
-    width: auto;
-	height: auto;
 	max-width: 80%;
 	max-height: 100%;
 }
